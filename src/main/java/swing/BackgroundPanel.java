@@ -3,6 +3,7 @@ package swing;
 import java.awt.Graphics;
 import java.awt.Image;
 
+import javax.imageio.ImageIO;
 import javax.swing.ImageIcon;
 import javax.swing.JPanel;
 
@@ -16,7 +17,11 @@ public class BackgroundPanel extends JPanel {
 		new JPanel();
 		ImageIcon imageIcon = null;
 		try {
-			imageIcon = new ImageIcon(BackgroundPanel.class.getResource(imagePath));
+			if (getClass().getResource(imagePath) != null) {
+				imageIcon = new ImageIcon(ImageIO.read(getClass().getResource(imagePath)));
+			} else {
+			    System.out.println(imagePath);
+			}
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();

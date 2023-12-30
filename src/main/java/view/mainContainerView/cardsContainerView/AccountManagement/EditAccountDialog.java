@@ -36,6 +36,7 @@ public class EditAccountDialog extends JDialog {
 	private JTextField textField_createdAt;
 	private JTextField textField_username;
 	JComboBox comboBox;
+	private JTextField textField_topUp;
 
 	/**
 	 * Launch the application.
@@ -97,6 +98,10 @@ public class EditAccountDialog extends JDialog {
 				panel_jLabels.add(label_balance);
 			}
 			{
+				JLabel label_topUp = new JLabel("Top Up");
+				panel_jLabels.add(label_topUp);
+			}
+			{
 				JLabel lblNewLabel = new JLabel("Created At");
 				panel_jLabels.add(lblNewLabel);
 			}
@@ -129,6 +134,11 @@ public class EditAccountDialog extends JDialog {
 				
 				panel_jTextFields.add(textField_balance);
 				textField_balance.setColumns(10);
+			}
+			{
+				textField_topUp = new JTextField();
+				panel_jTextFields.add(textField_topUp);
+				textField_topUp.setColumns(10);
 			}
 			{
 				textField_createdAt = new JTextField();
@@ -181,6 +191,7 @@ public class EditAccountDialog extends JDialog {
 			comboBox.setSelectedIndex(3);
 		
 		textField_balance.setText(account.getBalance()+"");
+		textField_balance.setEditable(false);
 		
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String createdAt = simpleDateFormat.format(account.getCreatedAt());
@@ -200,7 +211,7 @@ public class EditAccountDialog extends JDialog {
 		}else if(comboBox.getSelectedIndex() == 3) {
 			role = Role.user;
 		}
-		int balance = Integer.parseInt(textField_balance.getText());
+		int topUp = Integer.parseInt(textField_topUp.getText());
 		
 		if(password == "") {
 			JOptionPane.showMessageDialog(this, "Please enter password.", "", JOptionPane.INFORMATION_MESSAGE);
@@ -209,7 +220,7 @@ public class EditAccountDialog extends JDialog {
 		} else {
 			account.setPassword(password);
 			account.setRole(role);
-			account.setBalance(balance);
+			account.setBalance(account.getBalance()+topUp);
 			AccountDAO.getInstance().update(account);
 			accountContainer.reloadTable();
 			JOptionPane.showMessageDialog(this, "The account edited successfully", "", JOptionPane.INFORMATION_MESSAGE);

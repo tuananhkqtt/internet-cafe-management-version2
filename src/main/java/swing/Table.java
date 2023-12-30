@@ -19,7 +19,6 @@ import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
 
 public class Table extends JTable {
 	EventListener eventListener;
@@ -167,7 +166,6 @@ public class Table extends JTable {
     	@Override
 	    protected void setValue(Object value) {
 	        if (value instanceof ImageIcon) {
-	        	System.out.println(((ImageIcon) value).getImage());
 	            setIcon((ImageIcon) value);
 	            setText("");
 	        } else {

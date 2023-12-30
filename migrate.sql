@@ -78,7 +78,7 @@ CREATE TABLE Computers
 SET @i = 0;
 WHILE @i < 50
 BEGIN
-	DECLARE @Name VARCHAR(20) = 'Computer'+CAST(@i AS VARCHAR(5))
+	DECLARE @Name VARCHAR(20) = 'Computer '+CAST(@i+1 AS VARCHAR(5))
 	DECLARE @Price INT = 10000;
     INSERT INTO Computers (Name, Price, CreatedAt)
     VALUES (@Name, @Price, '2023-12-01')
@@ -97,18 +97,18 @@ CREATE TABLE Products
 )
 -- Chèn Products
 INSERT INTO Products (Name, Price, Quantity, ImageUrl, CreatedAt)
-VALUES (N'Cơm chiên bò', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Cơm chiên trứng', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Nui xào bò', 35000, 0, '/images/loginBackground.jpg', '2023-12-01'),
-		(N'Cơm trứng bò', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Cơm xào trứng', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Nui chiên bò', 35000, 0, '/images/loginBackground.jpg', '2023-12-01'),
-		(N'Cơm chiên bò', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Cơm chiên trứng', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Nui xào bò', 35000, 0, '/images/loginBackground.jpg', '2023-12-01'),
-		(N'Cơm chiên bò', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Cơm chiên trứng', 30000, 0, '/images/avatar.png', '2023-12-01'),
-		(N'Nui xào bò', 35000, 0, '/images/loginBackground.jpg', '2023-12-01');
+VALUES (N'Cơm chiên bò', 30000, 0, '/images/product1.jpg', '2023-12-01'),
+		(N'Cơm chiên trứng', 30000, 0, '/images/product2.jpg', '2023-12-01'),
+		(N'Nui xào bò', 35000, 0, '/images/product3.jpg', '2023-12-01'),
+		(N'Cơm trứng bò', 30000, 0, '/images/product4.jpg', '2023-12-01'),
+		(N'Cơm xào trứng', 30000, 0, '/images/product5.jpg', '2023-12-01'),
+		(N'Nui chiên bò', 35000, 0, '/images/product6.jpg', '2023-12-01'),
+		(N'Cơm chiên bò', 30000, 0, '/images/product7.jpg', '2023-12-01'),
+		(N'Cơm chiên trứng', 30000, 0, '/images/product8.jpg', '2023-12-01'),
+		(N'Nui xào bò', 35000, 0, '/images/product9.jpg', '2023-12-01'),
+		(N'Cơm chiên bò', 30000, 0, '/images/product10.jpg', '2023-12-01'),
+		(N'Cơm chiên trứng', 30000, 0, '/images/product11.jpg', '2023-12-01'),
+		(N'Nui xào bò', 35000, 0, '/images/product12.jpg', '2023-12-01');
 
 -- Tạo bảng Invoices
 CREATE TABLE Invoices
@@ -118,7 +118,7 @@ CREATE TABLE Invoices
 	ComputerId INT,
 	Total INT,
 	CreatedAt DATETIME,
-	Status VARCHAR(20) CHECK (Status IN ('wait for accepted', 'accepted', 'served', 'is paied', 'reject')),
+	Status VARCHAR(20) CHECK (Status IN ('uncompleted', 'completed', 'rejected')),
 	CreatedBy INT,
 )
 
@@ -165,15 +165,13 @@ BEGIN
 		END
 	END
 	-- Chen Invoices
-	DECLARE @status VARCHAR(20) = CASE WHEN RAND() <= 0.1 THEN 'reject' ELSE 'is paied' END
+	DECLARE @status VARCHAR(20) = CASE WHEN RAND() <= 0.1 THEN 'rejected' ELSE 'completed' END
 	-- neu la nhung hoa don duoc tao trong gio hien tại thi hoa don co the chua hoan thanh
 	IF DATEPART(HOUR, @InvoiceCreatedAt) = DATEPART(HOUR, GETDATE())
 	BEGIN
-		SET @status = CASE WHEN RAND() < 0.2 THEN 'wait for accepted'
-						WHEN RAND() < 0.4 THEN 'accepted'
-						WHEN RAND() < 0.6 THEN 'served'
-						WHEN RAND() < 0.8 THEN 'is paied'
-						ELSE 'reject' END
+		SET @status = CASE WHEN RAND() < 0.5 THEN 'uncompleted'
+						WHEN RAND() < 0.4 THEN 'completed'
+						ELSE 'rejected' END
 	END
 	
 	INSERT INTO Invoices(AccountId, ComputerId, Total, CreatedAt, Status, CreatedBy)
@@ -182,8 +180,17 @@ BEGIN
 	SET @InvoiceId = @InvoiceId + 1
 	-- tang thoi diem tao hoa don len mot khoang thoi gian ngau nhien
 	SET @InvoiceCreatedAt = DATEADD(SECOND, CAST(RAND() * 300 AS INT), @InvoiceCreatedAt);
-	-- Neu thoi diem tao hoa don lon hon thoi diem hien tai thi break
+	IF DATEPART(DAY, @InvoiceCreatedAt) = DATEPART(DAY, GETDATE())
+	BEGIN
+		SET @InvoiceCreatedAt = DATEADD(SECOND, CAST(RAND() * 300 AS INT), @InvoiceCreatedAt);
+	END
+	ELSE
+	BEGIN
+		SET @InvoiceCreatedAt = DATEADD(SECOND, CAST(RAND() * 3600 AS INT), @InvoiceCreatedAt);
+	END
 
+
+	-- Neu thoi diem tao hoa don lon hon thoi diem hien tai thi break
 	IF @InvoiceCreatedAt > GETDATE()
 	BEGIN
 		BREAK;

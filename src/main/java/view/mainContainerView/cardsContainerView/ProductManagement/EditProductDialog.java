@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -18,9 +20,18 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.net.URL;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 import java.text.SimpleDateFormat;
 
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class EditProductDialog extends JDialog {
 	private ProductContainer productContainer;
@@ -31,8 +42,11 @@ public class EditProductDialog extends JDialog {
 	private JTextField textField_name;
 	private JTextField textField_price;
 	private JTextField textField_quantity;
-	private JTextField textField_imageUrl;
 	private JTextField textField_createdAt;
+	
+	private File imageFile;
+	private String imageParentPath;
+	private JLabel label_fileName;
 
 	/**
 	 * Launch the application.
@@ -90,8 +104,8 @@ public class EditProductDialog extends JDialog {
 				panel_jLabels.add(lable_quantity);
 			}
 			{
-				JLabel lable_imageUrl = new JLabel("ImageUrl");
-				panel_jLabels.add(lable_imageUrl);
+				JLabel lable_image = new JLabel("Image");
+				panel_jLabels.add(lable_image);
 			}
 			{
 				JLabel lblNewLabel = new JLabel("Created At");
@@ -123,9 +137,18 @@ public class EditProductDialog extends JDialog {
 				panel_jTextFields.add(textField_quantity);
 			}
 			{
-				textField_imageUrl = new JTextField();
-				textField_imageUrl.setColumns(10);
-				panel_jTextFields.add(textField_imageUrl);
+				JPanel panel = new JPanel();
+				panel_jTextFields.add(panel);
+				{
+					JButton btnChooseImage = new JButton("Choose Image");
+					btnChooseImage.addActionListener(new EditProductController(this));
+					panel.setLayout(new BorderLayout(0, 0));
+					panel.add(btnChooseImage, BorderLayout.WEST);
+				}
+				{
+					label_fileName = new JLabel("");
+					panel.add(label_fileName, BorderLayout.CENTER);
+				}
 			}
 			{
 				textField_createdAt = new JTextField();
@@ -171,7 +194,9 @@ public class EditProductDialog extends JDialog {
 		
 		textField_quantity.setText(product.getQuantity()+"");
 		
-		textField_imageUrl.setText(product.getImageUrl());
+		URL fullImageUrl = getClass().getResource(product.getImageUrl());
+		imageFile = new File(fullImageUrl.getFile());
+		imageParentPath = imageFile.getParent();
 		
 		SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String createdAt = simpleDateFormat.format(product.getCreatedAt());
@@ -183,21 +208,20 @@ public class EditProductDialog extends JDialog {
 		String name = textField_name.getText();
 		int price = Integer.parseInt(textField_price.getText());
 		int quantity = Integer.parseInt(textField_quantity.getText());
-		String imageUrl = textField_imageUrl.getText();
+		String imageUrl = "/images/"+imageFile.getName();
 		
 		if(name.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter name.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else if(price == 0) {
-			JOptionPane.showMessageDialog(this, "Please select price.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(quantity == 0) {
-			JOptionPane.showMessageDialog(this, "Please select quantity.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(imageUrl.equals("")) {
-			JOptionPane.showMessageDialog(this, "Please select imageUrl.", "", JOptionPane.INFORMATION_MESSAGE);
+			JOptionPane.showMessageDialog(this, "Please enter price.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			product.setName(name);
 			product.setPrice(price);
 			product.setQuantity(quantity);
-			product.setImageUrl(imageUrl);
+			if(!label_fileName.getText().equals("")) {
+				saveImage(imageFile, imageParentPath, "product"+product.getId()+"."+getFileExtension(imageFile));
+				product.setImageUrl("/images/"+"product"+product.getId()+"."+getFileExtension(imageFile));
+			}
 			ProductDAO.getInstance().update(product);
 			productContainer.reloadTable();
 			JOptionPane.showMessageDialog(this, "The product edited successfully", "", JOptionPane.INFORMATION_MESSAGE);
@@ -208,4 +232,63 @@ public class EditProductDialog extends JDialog {
 	public void cancel() {
 		dispose();
 	}
+	
+	public void chooseImage() {
+		try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+		
+		JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Choose Image");
+        int result = fileChooser.showOpenDialog(this);
+        
+        if (result == JFileChooser.APPROVE_OPTION) {
+        	File selectedFile = fileChooser.getSelectedFile();
+            if (isImageFile(selectedFile)) {
+            	imageFile = selectedFile;
+            	label_fileName.setText(imageFile.getAbsolutePath());
+            } else {
+                JOptionPane.showMessageDialog(this, "This file is not an image!");
+            }
+        }
+        
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	private void saveImage(File sourceFile, String fileParentPath, String fileName) {
+        try {
+            Path sourcePath = sourceFile.toPath();
+            Path destinationPath = Path.of(fileParentPath, fileName);
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            destinationPath = Path.of("src/main/resources/images", fileName);
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
+	private boolean isImageFile(File file) {
+        try {
+            BufferedImage image = ImageIO.read(file);
+            return image != null;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+	
+	private String getFileExtension(File file) {
+        String extension = null;
+        String fileName = file.getName();
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
+            extension = fileName.substring(lastDotIndex + 1);
+        }
+        return extension;
+    }
 }

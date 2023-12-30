@@ -36,7 +36,7 @@ public class HeaderContainerView extends JPanel {
 		iconButton_notification.setBackground(Color.decode("#831843"));
 		iconButton_notification.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		iconButton_notification.setSize(new Dimension(iconSize, iconSize));
-//		iconButton_notification.setIcon(new ImageIcon(getClass().getResource("/icons/notification.png")));
+		iconButton_notification.setIcon(new ImageIcon(getClass().getResource("/icons/notification.png")));
 		add(iconButton_notification);
 		
 		JSeparator jseparator = new JSeparator();

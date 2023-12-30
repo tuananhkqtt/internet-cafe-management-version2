@@ -18,8 +18,10 @@ public class EditProductController implements ActionListener{
 		// TODO Auto-generated method stub
 		if(e.getActionCommand() == "OK") {
 			editProductDialog.ok();
-		}else if(e.getActionCommand() == "Cancel") {
+		} else if(e.getActionCommand() == "Cancel") {
 			editProductDialog.cancel();
+		} else if(e.getActionCommand() == "Choose Image") {
+			editProductDialog.chooseImage();
 		}
 	}
 	
