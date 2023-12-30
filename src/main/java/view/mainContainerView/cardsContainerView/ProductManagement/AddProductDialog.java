@@ -4,8 +4,10 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 
+import javax.imageio.ImageIO;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
@@ -18,8 +20,16 @@ import javax.swing.JOptionPane;
 
 import java.awt.Font;
 import java.awt.GridLayout;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.StandardCopyOption;
 
 import javax.swing.JTextField;
+import javax.swing.UIManager;
+import javax.swing.UnsupportedLookAndFeelException;
 
 public class AddProductDialog extends JDialog {
 	private ProductContainer productContainer;
@@ -28,7 +38,9 @@ public class AddProductDialog extends JDialog {
 	private JTextField textField_name;
 	private JTextField textField_price;
 	private JTextField textField_quantity;
-	private JTextField textField_imageUrl;
+
+	private File imageFile;
+	private JLabel label_fileName;
 
 	/**
 	 * Launch the application.
@@ -101,13 +113,23 @@ public class AddProductDialog extends JDialog {
 			}
 			{
 				textField_quantity = new JTextField();
+				textField_quantity.setText("0");
 				textField_quantity.setColumns(10);
 				panel_jTextFields.add(textField_quantity);
 			}
 			{
-				textField_imageUrl = new JTextField();
-				textField_imageUrl.setColumns(10);
-				panel_jTextFields.add(textField_imageUrl);
+				JPanel panel = new JPanel();
+				panel_jTextFields.add(panel);
+				{
+					JButton btnChooseImage = new JButton("Choose Image");
+					btnChooseImage.addActionListener(new AddProductController(this));
+					panel.setLayout(new BorderLayout(0, 0));
+					panel.add(btnChooseImage, BorderLayout.WEST);
+				}
+				{
+					label_fileName = new JLabel("");
+					panel.add(label_fileName, BorderLayout.CENTER);
+				}
 			}
 		}
 		{
@@ -139,26 +161,30 @@ public class AddProductDialog extends JDialog {
 	}
 	
 	public void ok() {
-		String name = textField_name.getText();
-		int price = Integer.parseInt(textField_price.getText());
-		int quantity = Integer.parseInt(textField_quantity.getText());
-		String imageUrl = textField_imageUrl.getText();
-		
-		if(name.equals("")) {
+		if(textField_name.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter name.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(price == 0) {
-			JOptionPane.showMessageDialog(this, "Please select price.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(quantity == 0) {
-			JOptionPane.showMessageDialog(this, "Please select quantity.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(imageUrl.equals("")) {
-			JOptionPane.showMessageDialog(this, "Please select imageUrl.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(textField_price.getText().equals("")) {
+			JOptionPane.showMessageDialog(this, "Please enter price.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(textField_quantity.getText().equals("")) {
+			JOptionPane.showMessageDialog(this, "Please enter quantity.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(label_fileName.getText().equals("")) {
+			JOptionPane.showMessageDialog(this, "Please select image.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else {
+			String name = textField_name.getText();
+			int price = Integer.parseInt(textField_price.getText());
+			int quantity = Integer.parseInt(textField_quantity.getText());
 			Product product = new Product();
 			product.setName(name);
 			product.setPrice(price);
 			product.setQuantity(quantity);
-			product.setImageUrl(imageUrl);
+			product.setImageUrl("");
 			ProductDAO.getInstance().insert(product);
+			product = ProductDAO.getInstance().selectLatestProduct();
+			
+			saveImage(imageFile, "target/classes/images", "product"+product.getId()+"."+getFileExtension(imageFile));
+			product.setImageUrl("/images/"+"product"+product.getId()+"."+getFileExtension(imageFile));
+			
+			ProductDAO.getInstance().update(product);
 			productContainer.reloadTable();
 			JOptionPane.showMessageDialog(this, "New product added successfully", "", JOptionPane.INFORMATION_MESSAGE);
 			dispose();
@@ -168,4 +194,63 @@ public class AddProductDialog extends JDialog {
 	public void cancel() {
 		dispose();
 	}
+	
+	public void chooseImage() {
+		try {
+            UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+		
+		JFileChooser fileChooser = new JFileChooser();
+        fileChooser.setDialogTitle("Choose Image");
+        int result = fileChooser.showOpenDialog(this);
+        
+        if (result == JFileChooser.APPROVE_OPTION) {
+        	File selectedFile = fileChooser.getSelectedFile();
+            if (isImageFile(selectedFile)) {
+            	imageFile = selectedFile;
+            	label_fileName.setText(imageFile.getAbsolutePath());
+            } else {
+                JOptionPane.showMessageDialog(this, "This file is not an image!");
+            }
+        }
+        
+        try {
+            UIManager.setLookAndFeel(UIManager.getCrossPlatformLookAndFeelClassName());
+        } catch (ClassNotFoundException | InstantiationException | IllegalAccessException | UnsupportedLookAndFeelException e) {
+            e.printStackTrace();
+        }
+	}
+	
+	private void saveImage(File sourceFile, String fileParentPath, String fileName) {
+        try {
+            Path sourcePath = sourceFile.toPath();
+            Path destinationPath = Path.of(fileParentPath, fileName);
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+            destinationPath = Path.of("src/main/resources/images", fileName);
+            Files.copy(sourcePath, destinationPath, StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+	
+	private boolean isImageFile(File file) {
+        try {
+            BufferedImage image = ImageIO.read(file);
+            return image != null;
+        } catch (IOException e) {
+            return false;
+        }
+    }
+	
+	private String getFileExtension(File file) {
+        String extension = null;
+        String fileName = file.getName();
+        int lastDotIndex = fileName.lastIndexOf('.');
+        if (lastDotIndex > 0 && lastDotIndex < fileName.length() - 1) {
+            extension = fileName.substring(lastDotIndex + 1);
+        }
+        return extension;
+    }
 }

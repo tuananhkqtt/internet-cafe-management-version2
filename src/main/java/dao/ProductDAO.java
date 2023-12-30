@@ -15,6 +15,37 @@ public class ProductDAO implements DAOInterface<Product>{
 		// TODO Auto-generated method stub
 		return new ProductDAO();
 	}
+	
+	public Product selectLatestProduct() {
+		// TODO Auto-generated method stub
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = JDBCUtil.getConnection();
+			String sqlStatement = "SELECT TOP 1 * FROM Products ORDER BY Id DESC";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				Product product = new Product();
+				product.setId(resultSet.getInt("Id"));
+				product.setName(resultSet.getString("Name"));
+				product.setPrice(resultSet.getInt("Price"));
+				product.setQuantity(resultSet.getInt("Quantity"));
+				product.setImageUrl(resultSet.getString("ImageUrl"));
+				product.setCreatedAt(resultSet.getDate("CreatedAt"));
+				return product;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeConnection(connection);
+			JDBCUtil.closePreparedStatement(preparedStatement);
+			JDBCUtil.closeResultSet(resultSet);
+		}
+		return null;
+	}
 
 	@Override
 	public void insert(Product product) {

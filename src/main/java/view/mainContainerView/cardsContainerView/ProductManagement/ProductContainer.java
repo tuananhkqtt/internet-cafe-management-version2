@@ -4,6 +4,9 @@ import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
+import java.io.File;
+import java.net.URL;
+import java.nio.file.Paths;
 import java.util.TreeSet;
 
 import javax.swing.AbstractButton;
@@ -131,6 +134,19 @@ public class ProductContainer extends JPanel {
 		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this product?",
                 "Confirmation", JOptionPane.YES_NO_OPTION);
 		if (result == JOptionPane.YES_OPTION) {
+			// delete file in target/classes
+			URL fullImageUrl = getClass().getResource(product.getImageUrl());
+			File imageFile = new File(fullImageUrl.getFile());
+			if (imageFile.exists()) {
+                imageFile.delete();
+            }
+			// delete file in resource
+			imageFile = Paths.get("src/main/resources", product.getImageUrl()).toFile();
+			if (imageFile.exists()) {
+				System.out.println("yes");
+                imageFile.delete();
+            }
+			
             ProductDAO.getInstance().delete(product);
             reloadTable();
         }

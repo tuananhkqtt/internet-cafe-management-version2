@@ -205,16 +205,16 @@ public class EditProductDialog extends JDialog {
 	}
 	
 	public void ok() {
-		String name = textField_name.getText();
-		int price = Integer.parseInt(textField_price.getText());
-		int quantity = Integer.parseInt(textField_quantity.getText());
-		String imageUrl = "/images/"+imageFile.getName();
-		
-		if(name.equals("")) {
+		if(textField_name.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter name.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(price == 0) {
+		} else if(textField_price.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter price.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(textField_quantity.getText().equals("")) {
+			JOptionPane.showMessageDialog(this, "Please enter quantity.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else {
+			String name = textField_name.getText();
+			int price = Integer.parseInt(textField_price.getText());
+			int quantity = Integer.parseInt(textField_quantity.getText());
 			product.setName(name);
 			product.setPrice(price);
 			product.setQuantity(quantity);
