@@ -21,7 +21,9 @@ import javax.swing.table.DefaultTableModel;
 
 import controller.account.AccountController;
 import dao.AccountDAO;
+import dao.EmployeeDAO;
 import model.Account;
+import model.Employee;
 import model.Role;
 import swing.Table;
 
@@ -127,12 +129,15 @@ public class AccountContainer extends JPanel {
 	}
 	
 	private void delete(Account account) {
-		if(account.getRole()==Role.admin || account.getRole()==Role.employee)
-			JOptionPane.showMessageDialog(this, "You can't delete this account.",
-	                "", JOptionPane.INFORMATION_MESSAGE);
+		Employee employee = new Employee();
+		employee.setAccountId(account.getId());
+		employee = EmployeeDAO.getInstance().selectByAccountId(employee);
+		
+		if(employee != null){
+			JOptionPane.showMessageDialog(this, "You can't delete this account.", "", JOptionPane.INFORMATION_MESSAGE);
+		}
 		else {
-			int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this account?",
-	                "Confirmation", JOptionPane.YES_NO_OPTION);
+			int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this account?", "Confirmation", JOptionPane.YES_NO_OPTION);
 			if (result == JOptionPane.YES_OPTION) {
 	            AccountDAO.getInstance().delete(account);
 	            reloadTable();

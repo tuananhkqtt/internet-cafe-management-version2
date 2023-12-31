@@ -35,8 +35,8 @@ public class EditAccountDialog extends JDialog {
 	private JTextField textField_balance;
 	private JTextField textField_createdAt;
 	private JTextField textField_username;
-	JComboBox comboBox;
 	private JTextField textField_topUp;
+	private JTextField textField_role;
 
 	/**
 	 * Launch the application.
@@ -125,13 +125,12 @@ public class EditAccountDialog extends JDialog {
 				panel_jTextFields.add(passwordField);
 			}
 			{
-				String[] roles = {"Role", "Admin", "Employee", "User"};
-				comboBox = new JComboBox(roles);
-				panel_jTextFields.add(comboBox);
+				textField_role = new JTextField();
+				panel_jTextFields.add(textField_role);
+				textField_role.setColumns(10);
 			}
 			{
 				textField_balance = new JTextField();
-				
 				panel_jTextFields.add(textField_balance);
 				textField_balance.setColumns(10);
 			}
@@ -183,12 +182,8 @@ public class EditAccountDialog extends JDialog {
 		
 		passwordField.setText(account.getPassword());
 		
-		if(account.getRole().equals(Role.admin))
-			comboBox.setSelectedIndex(1);
-		else if(account.getRole().equals(Role.employee))
-			comboBox.setSelectedIndex(2);
-		else if(account.getRole().equals(Role.user))
-			comboBox.setSelectedIndex(3);
+		textField_role.setText(account.getRole().getStringRole());
+		textField_role.setEditable(false);
 		
 		textField_balance.setText(account.getBalance()+"");
 		textField_balance.setEditable(false);
@@ -201,25 +196,13 @@ public class EditAccountDialog extends JDialog {
 	
 	public void ok() {
 		String password = passwordField.getText();
-		Role role = Role.admin;
-		if(comboBox.getSelectedIndex() == 0) {
-			role = null;
-		} else if(comboBox.getSelectedIndex() == 1) {
-			role = Role.admin;
-		} else if(comboBox.getSelectedIndex() == 2) {
-			role = Role.employee;
-		}else if(comboBox.getSelectedIndex() == 3) {
-			role = Role.user;
-		}
-		int topUp = Integer.parseInt(textField_topUp.getText());
-		
-		if(password == "") {
+		int topUp = 0;
+		if(password.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter password.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(role == null) {
-			JOptionPane.showMessageDialog(this, "Please select role.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(!textField_topUp.getText().equals("")) {
+			topUp = Integer.parseInt(textField_topUp.getText());
 		} else {
 			account.setPassword(password);
-			account.setRole(role);
 			account.setBalance(account.getBalance()+topUp);
 			AccountDAO.getInstance().update(account);
 			accountContainer.reloadTable();

@@ -116,14 +116,13 @@ public class AddComputerDialog extends JDialog {
 	}
 
 	public void ok() {
-		String name = textField_name.getText();
-		int price = Integer.parseInt(textField_price.getText());
-		
-		if(name == "") {
+		if(textField_name.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter name.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(price == 0) {
+		} else if(textField_price.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter price.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else {
+			String name = textField_name.getText();
+			int price = Integer.parseInt(textField_price.getText());
 			Computer computer = new Computer(name, price);
 			ComputerDAO.getInstance().insert(computer);
 			computerContainer.reloadTable();

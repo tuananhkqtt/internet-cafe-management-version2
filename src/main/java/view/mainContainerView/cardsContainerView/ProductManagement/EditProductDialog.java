@@ -138,11 +138,13 @@ public class EditProductDialog extends JDialog {
 			}
 			{
 				JPanel panel = new JPanel();
+				panel.setLayout(new BorderLayout(0, 0));
 				panel_jTextFields.add(panel);
 				{
 					JButton btnChooseImage = new JButton("Choose Image");
+					btnChooseImage.setBackground(Color.decode("#831843"));
+					btnChooseImage.setForeground(Color.WHITE);
 					btnChooseImage.addActionListener(new EditProductController(this));
-					panel.setLayout(new BorderLayout(0, 0));
 					panel.add(btnChooseImage, BorderLayout.WEST);
 				}
 				{

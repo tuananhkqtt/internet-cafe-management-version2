@@ -157,12 +157,13 @@ public class EditComputerDialog extends JDialog {
 	}
 	
 	public void ok() {
-		String name = textField_name.getText();
-		int price = Integer.parseInt(textField_price.getText());
-		
-		if(price == 0) {
+		if(textField_name.getText().equals("")) {
+			JOptionPane.showMessageDialog(this, "Please enter name.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(textField_price.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter price.", "", JOptionPane.INFORMATION_MESSAGE);
-		}{
+		} else {
+			String name = textField_name.getText();
+			int price = Integer.parseInt(textField_price.getText());
 			computer.setName(name);
 			computer.setPrice(price);
 			ComputerDAO.getInstance().update(computer);

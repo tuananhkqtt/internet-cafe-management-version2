@@ -8,6 +8,7 @@ import java.util.TreeSet;
 import database.JDBCUtil;
 import model.Account;
 import model.InvoiceDetail;
+import model.Product;
 import model.Role;
 
 public class InvoiceDetailDAO implements DAOInterface<InvoiceDetail>{
@@ -33,6 +34,8 @@ public class InvoiceDetailDAO implements DAOInterface<InvoiceDetail>{
 				invoiceDetail.setInvoiceId(invoiceId);
 				invoiceDetail.setProductId(resultSet.getInt("ProductId"));
 				invoiceDetail.setQuantity(resultSet.getInt("Quantity"));
+				invoiceDetail.setPrice(resultSet.getInt("Price"));
+				invoiceDetail.setAmount(resultSet.getInt("Amount"));
 				invoiceDetails.add(invoiceDetail);
 			}
 		} catch (Exception e) {

@@ -2,6 +2,7 @@ package view.mainContainerView.cardsContainerView.EmployeeManagement;
 
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
+import java.awt.GridLayout;
 import java.awt.Insets;
 import java.awt.event.MouseEvent;
 import java.util.TreeSet;
@@ -9,6 +10,7 @@ import java.util.TreeSet;
 import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -23,6 +25,7 @@ import dao.AccountDAO;
 import dao.EmployeeDAO;
 import model.Account;
 import model.Employee;
+import model.Role;
 import swing.Table;
 
 import java.awt.Cursor;
@@ -130,12 +133,30 @@ public class EmployeeContainer extends JPanel {
 	}
 	
 	private void delete(Employee employee) {
-		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this employee?",
-                "Confirmation", JOptionPane.YES_NO_OPTION);
-		if (result == JOptionPane.YES_OPTION) {
-            EmployeeDAO.getInstance().delete(employee);
-            reloadTable();
-        }
+		Account account = new Account(employee.getAccountId());
+		account = AccountDAO.getInstance().selectById(account);
+		if(account.getRole()==Role.admin)
+			JOptionPane.showMessageDialog(this, "You can't delete this because this is admin.", "", JOptionPane.INFORMATION_MESSAGE);
+		else {
+			JPanel panel = new JPanel();
+			panel.setLayout(new GridLayout(0, 1, 0, 10));
+			
+			JLabel jLabel = new JLabel("Are you sure you want to delete this employee?");
+			panel.add(jLabel);
+			
+			JCheckBox checkBox = new JCheckBox("Delete employee account on account management");
+			panel.add(checkBox);
+			
+			int result = JOptionPane.showConfirmDialog(this, panel, "Confirmation", JOptionPane.YES_NO_OPTION);
+			if (result == JOptionPane.YES_OPTION) {
+				if(checkBox.isSelected()) {
+					AccountDAO.getInstance().delete(account);
+				} else {
+					EmployeeDAO.getInstance().delete(employee);
+				}
+	            reloadTable();
+	        }
+		}
 	}
 	
 	public void search() {

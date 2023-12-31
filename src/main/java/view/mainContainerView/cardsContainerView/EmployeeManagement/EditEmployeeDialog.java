@@ -20,18 +20,13 @@ import java.awt.Font;
 import java.awt.GridLayout;
 
 import javax.swing.JTextField;
-import javax.swing.JPasswordField;
 
 public class EditEmployeeDialog extends JDialog {
 	private EmployeeContainer employeeContainer;
 	private Employee employee;
-	
+
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField_id;
-	private JPasswordField passwordField;
-	private JTextField textField_balance;
-	private JTextField textField_createdAt;
-	private JTextField textField_username;
 	private JTextField textField_name;
 	private JTextField textField_accountId;
 	private JTextField textField_email;
@@ -57,7 +52,7 @@ public class EditEmployeeDialog extends JDialog {
 	public EditEmployeeDialog(EmployeeContainer employeeContainer, Employee employee) {
 		this.employeeContainer = employeeContainer;
 		this.employee = employee;
-		
+
 		setModal(true);
 		setBounds(100, 100, 450, 300);
 		getContentPane().setLayout(new BorderLayout());
@@ -164,39 +159,38 @@ public class EditEmployeeDialog extends JDialog {
 		setLocationRelativeTo(null);
 		showEmployeeInfor();
 	}
-	
+
 	private void showEmployeeInfor() {
-		textField_id.setText(employee.getId()+"");
+		textField_id.setText(employee.getId() + "");
 		textField_id.setEditable(false);
-		
+
 		textField_name.setText(employee.getName());
-		
-		textField_accountId.setText(employee.getAccountId()+"");
+
+		textField_accountId.setText(employee.getAccountId() + "");
 		textField_accountId.setEditable(false);
-		
+
 		textField_email.setText(employee.getEmail());
-		
+
 		textField_phoneNumber.setText(employee.getPhoneNumber());
-		
+
 		textField_address.setText(employee.getAddress());
 	}
-	
+
 	public void ok() {
 		String name = textField_name.getText();
 		String email = textField_email.getText();
 		String phoneNumber = textField_phoneNumber.getText();
 		String address = textField_address.getText();
-		
-		if(name == "") {
+
+		if (name == "") {
 			JOptionPane.showMessageDialog(this, "Please enter name.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(email == "") {
+		} else if (email == "") {
 			JOptionPane.showMessageDialog(this, "Please enter email.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(phoneNumber == "") {
+		} else if (phoneNumber == "") {
 			JOptionPane.showMessageDialog(this, "Please enter phoneNumber.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(address == "") {
+		} else if (address == "") {
 			JOptionPane.showMessageDialog(this, "Please enter address.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			Employee employee = new Employee();
 			employee.setName(name);
 			employee.setEmail(email);
 			employee.setPhoneNumber(phoneNumber);

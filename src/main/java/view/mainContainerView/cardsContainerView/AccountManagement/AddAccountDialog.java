@@ -33,6 +33,8 @@ public class AddAccountDialog extends JDialog {
 	private JPasswordField passwordField;
 	private JComboBox comboBox;
 
+	private JTextField textField_role;
+
 	/**
 	 * Launch the application.
 	 */
@@ -70,7 +72,7 @@ public class AddAccountDialog extends JDialog {
 		{
 			JPanel panel_jLabels = new JPanel();
 			contentPanel.add(panel_jLabels, BorderLayout.WEST);
-			panel_jLabels.setLayout(new GridLayout(0, 1, 0, 5));
+			panel_jLabels.setLayout(new GridLayout(0, 1, 0, 20));
 			{
 				JLabel lable_username = new JLabel("Username");
 				panel_jLabels.add(lable_username);
@@ -80,10 +82,6 @@ public class AddAccountDialog extends JDialog {
 				panel_jLabels.add(label_password);
 			}
 			{
-				JLabel label_role = new JLabel("Role");
-				panel_jLabels.add(label_role);
-			}
-			{
 				JLabel label_balance = new JLabel("Balance");
 				panel_jLabels.add(label_balance);
 			}
@@ -91,7 +89,7 @@ public class AddAccountDialog extends JDialog {
 		{
 			JPanel panel_jTextFields = new JPanel();
 			contentPanel.add(panel_jTextFields, BorderLayout.CENTER);
-			panel_jTextFields.setLayout(new GridLayout(0, 1, 0, 5));
+			panel_jTextFields.setLayout(new GridLayout(0, 1, 0, 20));
 			{
 				textField_username = new JTextField();
 				textField_username.setColumns(10);
@@ -100,11 +98,6 @@ public class AddAccountDialog extends JDialog {
 			{
 				passwordField = new JPasswordField();
 				panel_jTextFields.add(passwordField);
-			}
-			{
-				String[] roles = {"Role", "Admin", "Employee", "User"};
-				comboBox = new JComboBox(roles);
-				panel_jTextFields.add(comboBox);
 			}
 			{
 				textField_balance = new JTextField();
@@ -142,30 +135,19 @@ public class AddAccountDialog extends JDialog {
 	}
 	
 	public void ok() {
-		String username = textField_username.getText();
-		String password = passwordField.getText();
-		Role role = Role.admin;
-		if(comboBox.getSelectedIndex() == 0) {
-			role = null;
-		} else if(comboBox.getSelectedIndex() == 1) {
-			role = Role.admin;
-		} else if(comboBox.getSelectedIndex() == 2) {
-			role = Role.employee;
-		}else if(comboBox.getSelectedIndex() == 3) {
-			role = Role.user;
-		}
-		int balance = Integer.parseInt(textField_balance.getText());
-		
-		if(username == "") {
+		if(textField_username.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter username.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(password == "") {
+		} else if(passwordField.getText().equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter password.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(role == null) {
-			JOptionPane.showMessageDialog(this, "Please select role.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(AccountDAO.getInstance().selectByUsername(username) != null) {
+		} else if(textField_balance.getText().equals("")) {
+			JOptionPane.showMessageDialog(this, "Please enter balance.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(AccountDAO.getInstance().selectByUsername(textField_username.getText()) != null) {
 			JOptionPane.showMessageDialog(this, "User already exists. Please try another username.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else {
-			Account account = new Account(username, password, role, balance);
+			String username = textField_username.getText();
+			String password = passwordField.getText();
+			int balance = Integer.parseInt(textField_balance.getText());
+			Account account = new Account(username, password, Role.user, balance);
 			AccountDAO.getInstance().insert(account);
 			accountContainer.reloadTable();
 			JOptionPane.showMessageDialog(this, "New account added successfully", "", JOptionPane.INFORMATION_MESSAGE);

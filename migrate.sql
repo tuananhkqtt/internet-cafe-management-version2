@@ -16,11 +16,11 @@ CREATE TABLE Accounts
 -- Chèn tài khoản admin
 INSERT INTO Accounts (Username, Password, Role, Balance, CreatedAt)
 VALUES ('admin', 'admin', 'admin', 0, '2023-12-01'),
-	('employee1', 'employee1', 'employee', 0, '2023-12-01'),
-	('employee2', 'employee2', 'employee', 0, '2023-12-01'),
-	('employee3', 'employee3', 'employee', 0, '2023-12-01'),
-	('employee4', 'employee4', 'employee', 0, '2023-12-01'),
-	('employee5', 'employee5', 'employee', 0, '2023-12-01');
+	('employee1', 'employee2', 'employee', 0, '2023-12-01'),
+	('employee2', 'employee3', 'employee', 0, '2023-12-01'),
+	('employee3', 'employee4', 'employee', 0, '2023-12-01'),
+	('employee4', 'employee5', 'employee', 0, '2023-12-01'),
+	('employee5', 'employee6', 'employee', 0, '2023-12-01');
 
 -- Chèn Accounts user va employee
 DECLARE @CreatedAt DATE = '2023-12-01';
@@ -50,20 +50,19 @@ CREATE TABLE Employees
 (
 	Id INT IDENTITY(1,1) PRIMARY KEY,
 	Name VARCHAR(100),
-	AccountId int,
+	AccountId int REFERENCES Accounts(Id) ON DELETE CASCADE,
 	Email varchar(30),
 	PhoneNumber varchar(20),
 	Address varchar(100),
-	CONSTRAINT FK_Account_Id FOREIGN KEY (AccountId) REFERENCES Accounts(Id)
 )
 -- Chèn admin, employees
 INSERT INTO Employees (Name, AccountId, Email, PhoneNumber, Address)
 VALUES ('Nguyen Viet Nhat Admin', 1, 'admin@example.com', '123-456-7890', 'Soc Son'),
-	('Employee1', 1, 'Employee1@example.com', '123-456-7890', 'Soc Son'),
-	('Employee2', 2, 'Employee2@example.com', '123-456-7890', 'Ha Noi'),
-	('Employee3', 3, 'Employee3@example.com', '123-456-7890', 'Ha Noi'),
-	('Employee4', 4, 'Employee4@example.com', '123-456-7890', 'Ha Noi'),
-	('Employee5', 5, 'Employee5@example.com', '123-456-7890', 'Ha Noi');
+	('Employee1', 2, 'Employee1@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee2', 3, 'Employee2@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee3', 4, 'Employee3@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee4', 5, 'Employee4@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee5', 6, 'Employee5@example.com', '123-456-7890', 'Ha Noi');
 
 -- Tạo bảng Computers
 CREATE TABLE Computers
@@ -114,8 +113,8 @@ VALUES (N'Cơm chiên bò', 30000, 0, '/images/product1.jpg', '2023-12-01'),
 CREATE TABLE Invoices
 (
 	Id INT IDENTITY(1,1) PRIMARY KEY,
-	AccountId INT, 
-	ComputerId INT,
+	AccountId INT REFERENCES Accounts(Id) ON DELETE CASCADE, 
+	ComputerId INT REFERENCES Computers(Id) ON DELETE CASCADE,
 	Total INT,
 	CreatedAt DATETIME,
 	Status VARCHAR(20) CHECK (Status IN ('uncompleted', 'completed', 'rejected')),
@@ -125,10 +124,11 @@ CREATE TABLE Invoices
 -- Tạo bảng InvoiceDetails
 CREATE TABLE InvoiceDetails
 (
-	InvoiceId INT,
-	ProductId INT,
+	InvoiceId INT REFERENCES Invoices(Id) ON DELETE CASCADE,
+	ProductId INT REFERENCES Products(Id) ON DELETE CASCADE,
 	Price INT,
-	Quantity INT
+	Quantity INT,
+	Amount INT
 )
 
 -- Chèn InvoiceDetails
@@ -145,26 +145,25 @@ DECLARE @InvoiceId INT = 1;
 DECLARE @createdby INT = 1;
 WHILE 1=1
 BEGIN
-	
+	-- Tao invoice truoc vi co rang buoc (mac dinh id = @ProductId)
+	INSERT INTO Invoices DEFAULT VALUES
+	-- Tao hoa don chi tiet
 	DECLARE @ProductId INT = CAST(RAND() * @ProductCount AS INT)+1;
-	DECLARE @Total INT = 0
 	WHILE 1=1
 	BEGIN
-		SELECT @Price = Price FROM Products WHERE id = @ProductId;
+		SELECT @Price = Price FROM Products WHERE Id = @ProductId
 		DECLARE @Quantity INT = CAST(RAND() * 3 AS INT)+1;
 		-- Chen InvoiceDetails
-		INSERT INTO InvoiceDetails(InvoiceId, ProductId, Price, Quantity)
-		VALUES (@InvoiceId, @ProductId, @Price, @Quantity)
-		-- total = tong cac product
-		SET @Total = @Total + @Price*@Quantity;
-		-- chuyen sang mot product khac
+		INSERT INTO InvoiceDetails
+		VALUES (@InvoiceId, @ProductId, @Price, @Quantity, @Price*@Quantity)
+		-- Chon mot product khac
 		SET @ProductId = @ProductId + CAST(RAND() * 5 AS INT) + 1
 		IF @ProductId > @ProductCount
 		BEGIN
 			BREAK;
 		END
 	END
-	-- Chen Invoices
+	-- Update Invoice vua tao
 	DECLARE @status VARCHAR(20) = CASE WHEN RAND() <= 0.1 THEN 'rejected' ELSE 'completed' END
 	-- neu la nhung hoa don duoc tao trong gio hien tại thi hoa don co the chua hoan thanh
 	IF DATEPART(HOUR, @InvoiceCreatedAt) = DATEPART(HOUR, GETDATE())
@@ -173,9 +172,11 @@ BEGIN
 						WHEN RAND() < 0.4 THEN 'completed'
 						ELSE 'rejected' END
 	END
-	
-	INSERT INTO Invoices(AccountId, ComputerId, Total, CreatedAt, Status, CreatedBy)
-	VALUES (CAST(RAND()*@AccountCount AS INT)+1, CAST(RAND()*@ComputerCount AS INT)+1, @Total, @InvoiceCreatedAt, @status, @createdby)
+	DECLARE @Total INT
+	SELECT @Total = SUM(Amount) FROM InvoiceDetails WHERE InvoiceId = @InvoiceId
+	UPDATE Invoices
+	SET AccountId=CAST(RAND()*@AccountCount AS INT)+1, ComputerId=CAST(RAND()*@ComputerCount AS INT)+1, Total=@Total, CreatedAt=@InvoiceCreatedAt, Status=@status, CreatedBy=@createdby
+	WHERE Id = @InvoiceId;
 		
 	SET @InvoiceId = @InvoiceId + 1
 	-- tang thoi diem tao hoa don len mot khoang thoi gian ngau nhien
@@ -188,8 +189,6 @@ BEGIN
 	BEGIN
 		SET @InvoiceCreatedAt = DATEADD(SECOND, CAST(RAND() * 3600 AS INT), @InvoiceCreatedAt);
 	END
-
-
 	-- Neu thoi diem tao hoa don lon hon thoi diem hien tai thi break
 	IF @InvoiceCreatedAt > GETDATE()
 	BEGIN

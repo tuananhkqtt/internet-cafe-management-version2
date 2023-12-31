@@ -24,23 +24,16 @@ import java.awt.GridLayout;
 
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
-import javax.swing.JComboBox;
 
 public class AddEmployeeDialog extends JDialog {
 	private EmployeeContainer employeeContainer;
 
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textField_username;
-	private JTextField textField_balance;
 	private JPasswordField passwordField;
-	private JComboBox comboBox;
-
 	private JTextField textField_email;
-
 	private JTextField textField_phoneNumber;
-
 	private JTextField textField_address;
-
 	private JTextField textField_name;
 
 	/**
@@ -176,24 +169,26 @@ public class AddEmployeeDialog extends JDialog {
 		String phoneNumber = textField_phoneNumber.getText();
 		String address = textField_address.getText();
 		
-		if(name == "") {
+		if(name.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter name.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(username == "") {
+		} else if(username.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter username.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(password == "") {
+		} else if(password.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter password.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(email == "") {
+		} else if(email.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter email.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(phoneNumber == "") {
+		} else if(phoneNumber.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter phoneNumber.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(address == "") {
+		} else if(address.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter address.", "", JOptionPane.INFORMATION_MESSAGE);
+		} else if(AccountDAO.getInstance().selectByUsername(username) != null) {
+			JOptionPane.showMessageDialog(this, "User already exists. Please try another username.", "", JOptionPane.INFORMATION_MESSAGE);
 		} else {
 			Account account = new Account(username, password);
 			account.setRole(Role.employee);
 			account.setBalance(0);
 			AccountDAO.getInstance().insert(account);
-			account = AccountDAO.getInstance().selectById(account);
+			account = AccountDAO.getInstance().selectByUsername(username);
 			
 			Employee employee = new Employee();
 			employee.setName(name);

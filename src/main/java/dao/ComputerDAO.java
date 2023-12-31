@@ -16,6 +16,36 @@ public class ComputerDAO implements DAOInterface<Computer>{
 		return new ComputerDAO();
 	}
 	
+	public Computer selectByName(String name) {
+		// TODO Auto-generated method stub
+		Connection connection = null;
+		PreparedStatement preparedStatement = null;
+		ResultSet resultSet = null;
+		try {
+			connection = JDBCUtil.getConnection();
+			String sqlStatement = "SELECT * FROM Computers WHERE Name = ?";
+			preparedStatement = connection.prepareStatement(sqlStatement);
+			preparedStatement.setString(1, name);
+			resultSet = preparedStatement.executeQuery();
+			while (resultSet.next()) {
+				Computer computer = new Computer();
+				computer.setId(resultSet.getInt("Id"));
+				computer.setName(resultSet.getString("Name"));
+				computer.setPrice(resultSet.getInt("Price"));
+				computer.setCreatedAt(resultSet.getDate("CreatedAt"));
+				return computer;
+			}
+		} catch (Exception e) {
+			// TODO: handle exception
+			e.printStackTrace();
+		} finally {
+			JDBCUtil.closeConnection(connection);
+			JDBCUtil.closePreparedStatement(preparedStatement);
+			JDBCUtil.closeResultSet(resultSet);
+		}
+		return null;
+	}
+	
 	@Override
 	public void insert(Computer computer) {
 		// TODO Auto-generated method stub
@@ -48,8 +78,8 @@ public class ComputerDAO implements DAOInterface<Computer>{
 			String sqlStatement = "UPDATE Computers SET Name=?, Price=? WHERE Id=?";
 			preparedStatement = connection.prepareStatement(sqlStatement);
 			preparedStatement.setString(1, computer.getName());
-			preparedStatement.setInt(3, computer.getPrice());
-			preparedStatement.setInt(4, computer.getId());
+			preparedStatement.setInt(2, computer.getPrice());
+			preparedStatement.setInt(3, computer.getId());
 			preparedStatement.executeUpdate();
 		} catch (Exception e) {
 			// TODO: handle exception

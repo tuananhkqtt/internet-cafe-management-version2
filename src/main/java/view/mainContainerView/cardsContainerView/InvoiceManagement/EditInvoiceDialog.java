@@ -236,34 +236,26 @@ public class EditInvoiceDialog extends JDialog {
 		
 		TreeSet<InvoiceDetail> invoiceDetails = InvoiceDetailDAO.getInstance().selectByInvoiceId(invoice.getId());
 		for (InvoiceDetail invoiceDetail : invoiceDetails) {
-			Product product = ProductDAO.getInstance().selectById(new Product(invoiceDetail.getProductId()));
-			Object[] row = new Object[] {product.getId(), product.getName(), invoiceDetail.getQuantity(), product.getPrice(), invoiceDetail.getQuantity()*product.getPrice()};
-			((DefaultTableModel) table.getModel()).addRow(row);
+			((DefaultTableModel) table.getModel()).addRow(invoiceDetail.toArray());
 		}
 		scrollPane.setViewportView(table);
 	}
 	
 	public void ok() {
-		BillStatus status = BillStatus.uncompleted;
+		BillStatus status = null;
 		if(comboBox.getSelectedIndex() == 0) {
-			status = null;
+			status = BillStatus.uncompleted;
 		} else if(comboBox.getSelectedIndex() == 1) {
 			status = BillStatus.completed;
 		} else if(comboBox.getSelectedIndex() == 2) {
 			status = BillStatus.rejected;
 		}
-		int total = Integer.parseInt(textField_total.getText());
 		
-		if(status == null) {
-			JOptionPane.showMessageDialog(this, "Please select BillStatus.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else {
-			invoice.setStatus(status);
-			invoice.setTotal(total);
-			InvoiceDAO.getInstance().update(invoice);
-			invoiceContainer.reloadTable();
-			JOptionPane.showMessageDialog(this, "The invoice edited successfully", "", JOptionPane.INFORMATION_MESSAGE);
-			dispose();
-		}
+		invoice.setStatus(status);
+		InvoiceDAO.getInstance().update(invoice);
+		invoiceContainer.reloadTable();
+		JOptionPane.showMessageDialog(this, "The invoice edited successfully", "", JOptionPane.INFORMATION_MESSAGE);
+		dispose();
 	}
 
 	public void cancel() {
