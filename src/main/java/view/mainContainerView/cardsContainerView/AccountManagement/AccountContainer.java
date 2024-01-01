@@ -74,7 +74,7 @@ public class AccountContainer extends JPanel {
 		add(scrollPane);
 		
 		String[] columnsName = new String[] {"Id", "Username", "Password", "Role", "Balance", "Create At"};
-		table = new Table(columnsName, new AccountController(this), null);
+		table = new Table(columnsName, new AccountController(this), null, true);
 		table.setCenterColumn(0);
 		addRows();
         scrollPane.setViewportView(table);

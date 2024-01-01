@@ -229,12 +229,12 @@ public class EditInvoiceDialog extends JDialog {
 	
 	private void showInvoiceDetail() {
 		String[] columnName = new String[] {"Product Id", "Product Name", "Quantity", "Unit Price", "Amount"};
-		Table table = new Table(columnName, null, null);
-		
+		Table table = new Table(columnName, null, null, false);
 		TreeSet<InvoiceDetail> invoiceDetails = InvoiceDetailDAO.getInstance().selectByInvoiceId(invoice.getId());
 		for (InvoiceDetail invoiceDetail : invoiceDetails) {
 			((DefaultTableModel) table.getModel()).addRow(invoiceDetail.toArray());
 		}
+		table.setCenterColumn(0);
 		scrollPane.setViewportView(table);
 	}
 	

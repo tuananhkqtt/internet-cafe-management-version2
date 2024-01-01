@@ -77,7 +77,7 @@ public class EmployeeContainer extends JPanel {
 		add(scrollPane);
 		
 		String[] columnsName = new String[] {"Id", "Name", "Account Username", "Email", "PhoneNumber", "Address"};		
-		table = new Table(columnsName, new EmployeeController(this), null);
+		table = new Table(columnsName, new EmployeeController(this), null, true);
 		table.setCenterColumn(0);
 		addRows();
         scrollPane.setViewportView(table);

@@ -72,7 +72,7 @@ public class ComputerContainer extends JPanel {
 		add(scrollPane);
 		
 		String[] columnsName = new String[] {"Id", "Name", "Price", "Create At"};
-		table = new Table(columnsName, new ComputerController(this), null);
+		table = new Table(columnsName, new ComputerController(this), null, true);
 		table.setCenterColumn(0);
 		addRows();
         scrollPane.setViewportView(table);

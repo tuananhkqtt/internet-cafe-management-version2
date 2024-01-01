@@ -83,7 +83,7 @@ public class ProductContainer extends JPanel {
 		JButton button = new JButton();
 		button.setIcon(new ImageIcon(getClass().getResource("/icons/dot.png")));
 		button.addActionListener(new ProductController(this));
-		table = new Table(columnsName, new ProductController(this), new Integer[] { 4 });
+		table = new Table(columnsName, new ProductController(this), new Integer[] { 4 }, true);
 		table.setCenterColumn(0);
 
 		IconButton button_image = new IconButton();

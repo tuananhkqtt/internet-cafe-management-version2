@@ -17,24 +17,28 @@ import javax.swing.table.DefaultTableModel;
 public class Table extends JTable {
 	EventListener eventListener;
 	
-	public Table(String[] columnNames, EventListener eventListener, Integer[] editableColumns) {
+	public Table(String[] columnNames, EventListener eventListener, Integer[] editableColumns, boolean haveEditAndDeleteColumn) {
 		this.eventListener = eventListener;
 		
-		columnNames = Arrays.copyOf(columnNames, columnNames.length + 2);
-		columnNames[columnNames.length - 1] = "Delete";
-		columnNames[columnNames.length - 2] = "Edit";
+		if(haveEditAndDeleteColumn) {
+			columnNames = Arrays.copyOf(columnNames, columnNames.length + 2);
+			columnNames[columnNames.length - 1] = "Delete";
+			columnNames[columnNames.length - 2] = "Edit";
+		}
 		
 		setModel(new DefaultTableModel(new Object[][] {}, columnNames) {
 			@Override
             public boolean isCellEditable(int row, int column) {
 				if(editableColumns != null) {
 					for (Integer editableColumn : editableColumns) {
-			            if (editableColumn.equals(column)) {
+			            if (editableColumn == column) {
 			                return true;
 			            }
 			        }
 				}
-				return column==getColumnCount()-1 || column==getColumnCount()-2;
+				if(haveEditAndDeleteColumn)
+					return column==getColumnCount()-1 || column==getColumnCount()-2;
+				return false;
             }
 		});
 		
@@ -47,16 +51,16 @@ public class Table extends JTable {
             setLeftColumn(i);
         }
 		
-		IconButton button_edit = new IconButton();
-		button_edit.setIcon(new ImageIcon(getClass().getResource("/icons/edit.png")));
-		setIconButtonColumn(button_edit, getColumnCount()-2);
-		
-		IconButton button_delete = new IconButton();
-		button_delete.setIcon(new ImageIcon(getClass().getResource("/icons/delete.png")));
-		setIconButtonColumn(button_delete, getColumnCount()-1);
+		if(haveEditAndDeleteColumn) {
+			IconButton button_edit = new IconButton();
+			button_edit.setIcon(new ImageIcon(getClass().getResource("/icons/edit.png")));
+			setIconButtonColumn(button_edit, getColumnCount()-2);
+			
+			IconButton button_delete = new IconButton();
+			button_delete.setIcon(new ImageIcon(getClass().getResource("/icons/delete.png")));
+			setIconButtonColumn(button_delete, getColumnCount()-1);
+		}
 	}
-	
-	
 	
 	public void addRow(Object[] rowData) {
 		((DefaultTableModel) getModel()).addRow(rowData);

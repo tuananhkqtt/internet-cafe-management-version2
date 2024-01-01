@@ -85,20 +85,9 @@ public class InvoiceContainer extends JPanel {
 
 		String[] columnsName = new String[] { "Id", "Account Username", "Computer Name", "Total", "Created At",
 				"Status", "CreatedBy" };
-		table = new Table(columnsName, new InvoiceController(this), null);
+		table = new Table(columnsName, new InvoiceController(this), null, true);
 		table.setCenterColumn(0);
 		addRows();
-//		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-//		table.getColumnModel().getColumn(0).setPreferredWidth(140);
-//		table.getColumnModel().getColumn(1).setPreferredWidth(150);
-//		table.getColumnModel().getColumn(2).setPreferredWidth(150);
-//		table.getColumnModel().getColumn(3).setPreferredWidth(150);
-//		table.getColumnModel().getColumn(4).setPreferredWidth(200);
-//		table.getColumnModel().getColumn(5).setPreferredWidth(150);
-//		table.getColumnModel().getColumn(6).setPreferredWidth(200);
-//		table.getColumnModel().getColumn(7).setPreferredWidth(140);
-//		table.getColumnModel().getColumn(8).setPreferredWidth(140);
-
 		scrollPane.setViewportView(table);
 
 		JLabel label_sum = new JLabel();
