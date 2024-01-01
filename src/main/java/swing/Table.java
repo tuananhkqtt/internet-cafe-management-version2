@@ -9,6 +9,7 @@ import java.util.EventListener;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
+import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.SwingConstants;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -52,13 +53,13 @@ public class Table extends JTable {
         }
 		
 		if(haveEditAndDeleteColumn) {
-			IconButton button_edit = new IconButton();
+			JButton button_edit = new JButton();
 			button_edit.setIcon(new ImageIcon(getClass().getResource("/icons/edit.png")));
-			setIconButtonColumn(button_edit, getColumnCount()-2);
+			setJButtonColumn(button_edit, getColumnCount()-2);
 			
-			IconButton button_delete = new IconButton();
+			JButton button_delete = new JButton();
 			button_delete.setIcon(new ImageIcon(getClass().getResource("/icons/delete.png")));
-			setIconButtonColumn(button_delete, getColumnCount()-1);
+			setJButtonColumn(button_delete, getColumnCount()-1);
 		}
 	}
 	
@@ -66,7 +67,7 @@ public class Table extends JTable {
 		((DefaultTableModel) getModel()).addRow(rowData);
 	}
 	
-	public void setIconButtonColumn(IconButton iconButton, int column) {
+	public void setJButtonColumn(JButton iconButton, int column) {
 		getColumnModel().getColumn(column).setCellRenderer(new ButtonCellRenderer(iconButton));
         getColumnModel().getColumn(column).setCellEditor(new ButtonCellEditor(iconButton, eventListener));
         getColumnModel().getColumn(column).setHeaderRenderer(centerHeaderRenderer);
@@ -144,11 +145,12 @@ public class Table extends JTable {
 }
 
 class ButtonCellRenderer extends DefaultTableCellRenderer {
-    private IconButton button;
+    private JButton button;
     
-    public ButtonCellRenderer(IconButton button) {
-    	this.button = new IconButton();
+    public ButtonCellRenderer(JButton button) {
+    	this.button = new JButton();
     	this.button.setOpaque(true);
+    	this.button.setBorderPainted(false);
     	this.button.setIcon(button.getIcon());
     }
     @Override

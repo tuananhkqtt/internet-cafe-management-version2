@@ -41,7 +41,7 @@ public class ProductController implements ActionListener, KeyListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getActionCommand().equalsIgnoreCase("Add Producct")) {
+		if(e.getActionCommand().equalsIgnoreCase("Add Product")) {
 			productContainer.addProduct();
 		} else {
 			Table table = (Table) ((Component) e.getSource()).getParent();

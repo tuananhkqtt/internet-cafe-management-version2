@@ -6,13 +6,14 @@ import java.awt.event.ActionListener;
 import java.util.EventListener;
 
 import javax.swing.AbstractCellEditor;
+import javax.swing.JButton;
 import javax.swing.JTable;
 import javax.swing.table.TableCellEditor;
 
 public class ButtonCellEditor extends AbstractCellEditor implements TableCellEditor {
-    private IconButton button;
-    
-    public ButtonCellEditor(IconButton button, EventListener eventListener) {
+    private JButton button;
+	
+    public ButtonCellEditor(JButton button, EventListener eventListener) {
     	this.button = button;
     	this.button.setOpaque(true);
     	this.button.addActionListener((ActionListener) eventListener);

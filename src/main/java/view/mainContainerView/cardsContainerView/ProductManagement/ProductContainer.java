@@ -22,7 +22,6 @@ import javax.swing.table.DefaultTableModel;
 import controller.product.ProductController;
 import dao.ProductDAO;
 import model.Product;
-import swing.IconButton;
 import swing.Table;
 
 import java.awt.Cursor;
@@ -80,15 +79,12 @@ public class ProductContainer extends JPanel {
 		add(scrollPane);
 
 		columnsName = new String[] { "Id", "Name", "Price", "Quantity", "Image", "Created At" };
-		JButton button = new JButton();
-		button.setIcon(new ImageIcon(getClass().getResource("/icons/dot.png")));
-		button.addActionListener(new ProductController(this));
 		table = new Table(columnsName, new ProductController(this), new Integer[] { 4 }, true);
 		table.setCenterColumn(0);
 
-		IconButton button_image = new IconButton();
+		JButton button_image = new JButton();
 		button_image.setIcon(new ImageIcon(getClass().getResource("/icons/image.png")));
-		table.setIconButtonColumn(button_image, 4);
+		table.setJButtonColumn(button_image, 4);
 		addRows();
 		scrollPane.setViewportView(table);
 	}
@@ -133,7 +129,6 @@ public class ProductContainer extends JPanel {
 			// delete file in resource
 			imageFile = Paths.get("src/main/resources", product.getImageUrl()).toFile();
 			if (imageFile.exists()) {
-				System.out.println("yes");
 				imageFile.delete();
 			}
 

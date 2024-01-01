@@ -2,8 +2,6 @@ package model;
 
 import java.sql.Date;
 
-import javax.swing.ImageIcon;
-
 public class Product implements Comparable<Product>{
 	@Override
 	public String toString() {
@@ -71,7 +69,7 @@ public class Product implements Comparable<Product>{
 	}
 	public Object[] toArray() {
 		return new Object[] {
-				id, name, price, quantity, new ImageIcon(getClass().getResource("/icons/dot.png")), createdAt
+				id, name, price, quantity, imageUrl, createdAt
 		};
 	}
 	
