@@ -1,15 +1,18 @@
 package controller.computer;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JTextField;
 
+import swing.ButtonCellEditor;
+import swing.Table;
 import view.mainContainerView.cardsContainerView.computerManagement.ComputerContainer;
 
-public class ComputerController implements MouseListener, KeyListener{
+public class ComputerController implements ActionListener, KeyListener{
 	private ComputerContainer computerContainer;
 
 	public ComputerController(ComputerContainer computerContainer) {
@@ -37,38 +40,21 @@ public class ComputerController implements MouseListener, KeyListener{
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getComponent() instanceof JTextField) {
-			
-		} else
-			computerContainer.click(e);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getComponent() instanceof JTextField) {
-			computerContainer.search();
+		if(e.getActionCommand().equalsIgnoreCase("Add Computer")) {
+			computerContainer.addComputer();
+		} else {
+			Table table = (Table) ((Component) e.getSource()).getParent();
+			int row = table.getSelectedRow();
+			int column = table.getSelectedColumn();
+			if(table.getColumnName(column).equalsIgnoreCase("Edit")) {
+				computerContainer.edit();
+			} else if(table.getColumnName(column).equalsIgnoreCase("Delete")) {
+				computerContainer.delete();
+			}
+			((ButtonCellEditor) table.getCellEditor(row, column)).fireEditingStopped();
 		}
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

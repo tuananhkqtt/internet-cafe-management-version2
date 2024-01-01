@@ -1,13 +1,14 @@
 package controller.invoice;
 
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
-import javax.swing.AbstractButton;
-
+import swing.ButtonCellEditor;
+import swing.Table;
 import view.mainContainerView.cardsContainerView.InvoiceManagement.InvoiceContainer;
 
-public class InvoiceController implements MouseListener{
+public class InvoiceController implements ActionListener{
 	private InvoiceContainer invoiceContainer;
 
 	public InvoiceController(InvoiceContainer invoiceContainer) {
@@ -16,42 +17,23 @@ public class InvoiceController implements MouseListener{
 	}
 
 	@Override
-	public void mouseClicked(MouseEvent e) {
+	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		switch (((AbstractButton)e.getComponent()).getText()) {
-		case "Previous":
+		if (e.getActionCommand().equalsIgnoreCase("Previous")) {
 			invoiceContainer.previous();
-			break;
-		case "Next":
+		} else if (e.getActionCommand().equalsIgnoreCase("Next")) {
 			invoiceContainer.next();
-			break;
-		default:
-			invoiceContainer.editOrDelete(e);
+		} else {
+			Table table = (Table) ((Component) e.getSource()).getParent();
+			int row = table.getSelectedRow();
+			int column = table.getSelectedColumn();
+			if(table.getColumnName(column).equalsIgnoreCase("Edit")) {
+				invoiceContainer.edit();
+			} else if(table.getColumnName(column).equalsIgnoreCase("Delete")) {
+				invoiceContainer.delete();
+			}
+			((ButtonCellEditor) table.getCellEditor(row, column)).fireEditingStopped();
 		}
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }

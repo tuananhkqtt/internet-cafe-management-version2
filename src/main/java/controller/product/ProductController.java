@@ -1,52 +1,23 @@
 package controller.product;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JTextField;
 
+import swing.ButtonCellEditor;
+import swing.Table;
 import view.mainContainerView.cardsContainerView.ProductManagement.ProductContainer;
 
-public class ProductController implements MouseListener, KeyListener{
+public class ProductController implements ActionListener, KeyListener{
 	ProductContainer productContainer;
 
 	public ProductController(ProductContainer productContainer) {
 		super();
 		this.productContainer = productContainer;
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getComponent() instanceof JTextField) {
-			
-		} else
-			productContainer.click(e);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -64,6 +35,26 @@ public class ProductController implements MouseListener, KeyListener{
 		// TODO Auto-generated method stub
 		if(e.getComponent() instanceof JTextField) {
 			productContainer.search();
+		}
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(e.getActionCommand().equalsIgnoreCase("Add Producct")) {
+			productContainer.addProduct();
+		} else {
+			Table table = (Table) ((Component) e.getSource()).getParent();
+			int row = table.getSelectedRow();
+			int column = table.getSelectedColumn();
+			if(table.getColumnName(column).equalsIgnoreCase("Edit")) {
+				productContainer.edit();
+			} else if(table.getColumnName(column).equalsIgnoreCase("Delete")) {
+				productContainer.delete();
+			} else if(table.getColumnName(column).equalsIgnoreCase("Image")) {
+				productContainer.showImage();
+			}
+			((ButtonCellEditor) table.getCellEditor(row, column)).fireEditingStopped();
 		}
 	}
 }

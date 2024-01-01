@@ -2,11 +2,9 @@ package view.mainContainerView.cardsContainerView.InvoiceManagement;
 
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 import controller.invoice.InvoiceController;
 import dao.InvoiceDAO;
-import model.BillStatus;
 import model.Invoice;
 import swing.Table;
 
@@ -14,20 +12,13 @@ import java.awt.Color;
 import java.awt.Cursor;
 import java.awt.Font;
 import java.awt.GraphicsEnvironment;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
 import java.util.TreeSet;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.JTextField;
-import javax.swing.ListSelectionModel;
 import javax.swing.SwingConstants;
-import javax.swing.Timer;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.ListSelectionListener;
 import javax.swing.table.DefaultTableModel;
 
 public class InvoiceContainer extends JPanel {
@@ -64,7 +55,7 @@ public class InvoiceContainer extends JPanel {
 		button_previous.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		button_previous.setBackground(Color.decode("#831843"));
 		button_previous.setForeground(Color.WHITE);
-		button_previous.addMouseListener(new InvoiceController(this));
+		button_previous.addActionListener(new InvoiceController(this));
 		panel_pagination.add(button_previous);
 
 		textField = new JTextField();
@@ -83,7 +74,7 @@ public class InvoiceContainer extends JPanel {
 		button_next.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
 		button_next.setBackground(Color.decode("#831843"));
 		button_next.setForeground(Color.WHITE);
-		button_next.addMouseListener(new InvoiceController(this));
+		button_next.addActionListener(new InvoiceController(this));
 		panel_pagination.add(button_next);
 
 		scrollPane = new JScrollPane();
@@ -94,18 +85,19 @@ public class InvoiceContainer extends JPanel {
 
 		String[] columnsName = new String[] { "Id", "Account Username", "Computer Name", "Total", "Created At",
 				"Status", "CreatedBy" };
-		table = new Table(columnsName, new InvoiceController(this));
+		table = new Table(columnsName, new InvoiceController(this), null);
+		table.setCenterColumn(0);
 		addRows();
-		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-		table.getColumnModel().getColumn(0).setPreferredWidth(140);
-		table.getColumnModel().getColumn(1).setPreferredWidth(150);
-		table.getColumnModel().getColumn(2).setPreferredWidth(150);
-		table.getColumnModel().getColumn(3).setPreferredWidth(150);
-		table.getColumnModel().getColumn(4).setPreferredWidth(200);
-		table.getColumnModel().getColumn(5).setPreferredWidth(150);
-		table.getColumnModel().getColumn(6).setPreferredWidth(200);
-		table.getColumnModel().getColumn(7).setPreferredWidth(140);
-		table.getColumnModel().getColumn(8).setPreferredWidth(140);
+//		table.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+//		table.getColumnModel().getColumn(0).setPreferredWidth(140);
+//		table.getColumnModel().getColumn(1).setPreferredWidth(150);
+//		table.getColumnModel().getColumn(2).setPreferredWidth(150);
+//		table.getColumnModel().getColumn(3).setPreferredWidth(150);
+//		table.getColumnModel().getColumn(4).setPreferredWidth(200);
+//		table.getColumnModel().getColumn(5).setPreferredWidth(150);
+//		table.getColumnModel().getColumn(6).setPreferredWidth(200);
+//		table.getColumnModel().getColumn(7).setPreferredWidth(140);
+//		table.getColumnModel().getColumn(8).setPreferredWidth(140);
 
 		scrollPane.setViewportView(table);
 
@@ -132,25 +124,20 @@ public class InvoiceContainer extends JPanel {
 		addRows();
 	}
 
-	public void editOrDelete(MouseEvent e) {
+	public void edit() {
 		int id = (int) table.getModel().getValueAt(table.getSelectedRow(), 0);
 		Invoice invoice = new Invoice(id);
 		invoice = InvoiceDAO.getInstance().selectById(invoice);
-		if (table.getColumnCount() - 2 == (table.getSelectedColumn())) {
-			edit(invoice);
-		} else if (table.getColumnCount() - 1 == table.getSelectedColumn()) {
-			delete(invoice);
-		}
-	}
-
-	private void edit(Invoice invoice) {
 		new EditInvoiceDialog(this, invoice).setVisible(true);
 	}
 
-	private void delete(Invoice invoice) {
+	public void delete() {
 		int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this invoice?",
 				"Confirmation", JOptionPane.YES_NO_OPTION);
 		if (result == JOptionPane.YES_OPTION) {
+			int id = (int) table.getModel().getValueAt(table.getSelectedRow(), 0);
+			Invoice invoice = new Invoice(id);
+			invoice = InvoiceDAO.getInstance().selectById(invoice);
 			InvoiceDAO.getInstance().delete(invoice);
 			reloadTable();
 		}

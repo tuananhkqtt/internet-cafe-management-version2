@@ -4,10 +4,8 @@ import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
 import java.util.TreeSet;
 
-import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
@@ -69,7 +67,7 @@ public class EmployeeContainer extends JPanel {
 		button_add.setIconTextGap(12);
 		button_add.setIcon(new ImageIcon(EmployeeContainer.class.getResource("/icons/notification.png")));
 		button_add.setText("Add Employee");
-		button_add.addMouseListener(new EmployeeController(this));
+		button_add.addActionListener(new EmployeeController(this));
 		add(button_add);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -79,7 +77,8 @@ public class EmployeeContainer extends JPanel {
 		add(scrollPane);
 		
 		String[] columnsName = new String[] {"Id", "Name", "Account Username", "Email", "PhoneNumber", "Address"};		
-		table = new Table(columnsName, new EmployeeController(this));
+		table = new Table(columnsName, new EmployeeController(this), null);
+		table.setCenterColumn(0);
 		addRows();
         scrollPane.setViewportView(table);
 	}
@@ -97,42 +96,22 @@ public class EmployeeContainer extends JPanel {
         addRows();
 	}
 	
-	public void click(MouseEvent e) {
-		if(((AbstractButton) e.getComponent()).getText() == "Add Employee") {
-			addEmployee();
-		}else {
-			Object[] rowData = new Object[table.getModel().getColumnCount()];
-	        for (int i = 0; i < table.getModel().getColumnCount(); i++) {
-	            rowData[i] = table.getModel().getValueAt(table.getSelectedRow(), i);
-	        }
-	        
-	        int id = (int) rowData[0];
-	        String name = (String) rowData[1];
-	        
-	        Account account = AccountDAO.getInstance().selectByUsername((String) rowData[2]);
-	        int accountId = account.getId();
-	        
-	        String email = (String) rowData[3];
-	        String phoneNumber = (String) rowData[4];
-	        String address = (String) rowData[5];
-	        Employee employee = new Employee(id, name, accountId, email, phoneNumber, address);
-			if(table.getColumnCount()-2 == (table.getSelectedColumn())) {
-				edit(employee);
-			} else if(table.getColumnCount()-1 == table.getSelectedColumn()) {
-				delete(employee);
-			}
-		}
-	}
-	
-	private void addEmployee() {
+	public void addEmployee() {
 		new AddEmployeeDialog(this).setVisible(true);
 	}
 	
-	private void edit(Employee employee) {
+	public void edit() {
+        int id = (int) table.getModel().getValueAt(table.getSelectedRow(), 0);
+        Employee employee = new Employee(id);
+        employee = EmployeeDAO.getInstance().selectById(employee);
         new EditEmployeeDialog(this, employee).setVisible(true);
 	}
 	
-	private void delete(Employee employee) {
+	public void delete() {
+		int id = (int) table.getModel().getValueAt(table.getSelectedRow(), 0);
+        Employee employee = new Employee(id);
+        employee = EmployeeDAO.getInstance().selectById(employee);
+        
 		Account account = new Account(employee.getAccountId());
 		account = AccountDAO.getInstance().selectById(account);
 		if(account.getRole()==Role.admin)

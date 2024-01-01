@@ -16,11 +16,11 @@ CREATE TABLE Accounts
 -- Chèn tài khoản admin
 INSERT INTO Accounts (Username, Password, Role, Balance, CreatedAt)
 VALUES ('admin', 'admin', 'admin', 0, '2023-12-01'),
-	('employee1', 'employee2', 'employee', 0, '2023-12-01'),
-	('employee2', 'employee3', 'employee', 0, '2023-12-01'),
-	('employee3', 'employee4', 'employee', 0, '2023-12-01'),
-	('employee4', 'employee5', 'employee', 0, '2023-12-01'),
-	('employee5', 'employee6', 'employee', 0, '2023-12-01');
+	('employee2', 'employee2', 'employee', 0, '2023-12-01'),
+	('employee3', 'employee3', 'employee', 0, '2023-12-01'),
+	('employee4', 'employee4', 'employee', 0, '2023-12-01'),
+	('employee5', 'employee5', 'employee', 0, '2023-12-01'),
+	('employee6', 'employee6', 'employee', 0, '2023-12-01');
 
 -- Chèn Accounts user va employee
 DECLARE @CreatedAt DATE = '2023-12-01';
@@ -58,11 +58,11 @@ CREATE TABLE Employees
 -- Chèn admin, employees
 INSERT INTO Employees (Name, AccountId, Email, PhoneNumber, Address)
 VALUES ('Nguyen Viet Nhat Admin', 1, 'admin@example.com', '123-456-7890', 'Soc Son'),
-	('Employee1', 2, 'Employee1@example.com', '123-456-7890', 'Ha Noi'),
-	('Employee2', 3, 'Employee2@example.com', '123-456-7890', 'Ha Noi'),
-	('Employee3', 4, 'Employee3@example.com', '123-456-7890', 'Ha Noi'),
-	('Employee4', 5, 'Employee4@example.com', '123-456-7890', 'Ha Noi'),
-	('Employee5', 6, 'Employee5@example.com', '123-456-7890', 'Ha Noi');
+	('Employee2', 2, 'Employee2@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee3', 3, 'Employee3@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee4', 4, 'Employee4@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee5', 5, 'Employee5@example.com', '123-456-7890', 'Ha Noi'),
+	('Employee6', 6, 'Employee6@example.com', '123-456-7890', 'Ha Noi');
 
 -- Tạo bảng Computers
 CREATE TABLE Computers

@@ -1,52 +1,23 @@
 package controller.employee;
 
+import java.awt.Component;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 
 import javax.swing.JTextField;
 
+import swing.ButtonCellEditor;
+import swing.Table;
 import view.mainContainerView.cardsContainerView.EmployeeManagement.EmployeeContainer;
 
-public class EmployeeController implements MouseListener, KeyListener{
+public class EmployeeController implements ActionListener, KeyListener{
 	EmployeeContainer employeeContainer;
 
 	public EmployeeController(EmployeeContainer employeeContainer) {
 		super();
 		this.employeeContainer = employeeContainer;
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-		// TODO Auto-generated method stub
-		if(e.getComponent() instanceof JTextField) {
-			
-		} else
-			employeeContainer.click(e);
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		// TODO Auto-generated method stub
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	@Override
@@ -57,14 +28,31 @@ public class EmployeeController implements MouseListener, KeyListener{
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
 		if(e.getComponent() instanceof JTextField) {
 			employeeContainer.search();
 		}
 	}
 
 	@Override
-	public void keyReleased(KeyEvent e) {
+	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		
+		if(e.getActionCommand().equalsIgnoreCase("Add Employee")) {
+			employeeContainer.addEmployee();
+		} else {
+			Table table = (Table) ((Component) e.getSource()).getParent();
+			int row = table.getSelectedRow();
+			int column = table.getSelectedColumn();
+			if(table.getColumnName(column).equalsIgnoreCase("Edit")) {
+				employeeContainer.edit();
+			} else if(table.getColumnName(column).equalsIgnoreCase("Delete")) {
+				employeeContainer.delete();
+			}
+			((ButtonCellEditor) table.getCellEditor(row, column)).fireEditingStopped();
+		}
 	}
 }

@@ -12,7 +12,6 @@ import javax.swing.border.EmptyBorder;
 import controller.account.EditAccountController;
 import dao.AccountDAO;
 import model.Account;
-import model.Role;
 
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -23,7 +22,6 @@ import java.text.SimpleDateFormat;
 
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
-import javax.swing.JComboBox;
 
 public class EditAccountDialog extends JDialog {
 	private AccountContainer accountContainer;
@@ -199,9 +197,10 @@ public class EditAccountDialog extends JDialog {
 		int topUp = 0;
 		if(password.equals("")) {
 			JOptionPane.showMessageDialog(this, "Please enter password.", "", JOptionPane.INFORMATION_MESSAGE);
-		} else if(!textField_topUp.getText().equals("")) {
-			topUp = Integer.parseInt(textField_topUp.getText());
-		} else {
+		} else{
+			if(!textField_topUp.getText().equals("")) {
+				topUp = Integer.parseInt(textField_topUp.getText());
+			}
 			account.setPassword(password);
 			account.setBalance(account.getBalance()+topUp);
 			AccountDAO.getInstance().update(account);

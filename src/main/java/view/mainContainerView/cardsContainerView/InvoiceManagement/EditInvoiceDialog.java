@@ -23,16 +23,13 @@ import controller.invoice.EditInvoiceController;
 import dao.EmployeeDAO;
 import dao.InvoiceDAO;
 import dao.InvoiceDetailDAO;
-import dao.ProductDAO;
 import model.BillStatus;
 import model.Employee;
 import model.Invoice;
 import model.InvoiceDetail;
-import model.Product;
 import swing.Table;
 
 import javax.swing.JScrollPane;
-import javax.swing.JTable;
 
 public class EditInvoiceDialog extends JDialog {
 	private InvoiceContainer invoiceContainer;
@@ -232,7 +229,7 @@ public class EditInvoiceDialog extends JDialog {
 	
 	private void showInvoiceDetail() {
 		String[] columnName = new String[] {"Product Id", "Product Name", "Quantity", "Unit Price", "Amount"};
-		Table table = new Table(columnName, null);
+		Table table = new Table(columnName, null, null);
 		
 		TreeSet<InvoiceDetail> invoiceDetails = InvoiceDetailDAO.getInstance().selectByInvoiceId(invoice.getId());
 		for (InvoiceDetail invoiceDetail : invoiceDetails) {

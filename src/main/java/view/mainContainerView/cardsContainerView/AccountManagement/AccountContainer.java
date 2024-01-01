@@ -3,11 +3,8 @@ package view.mainContainerView.cardsContainerView.AccountManagement;
 import java.awt.Color;
 import java.awt.GraphicsEnvironment;
 import java.awt.Insets;
-import java.awt.event.MouseEvent;
-import java.sql.Date;
 import java.util.TreeSet;
 
-import javax.swing.AbstractButton;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -24,7 +21,6 @@ import dao.AccountDAO;
 import dao.EmployeeDAO;
 import model.Account;
 import model.Employee;
-import model.Role;
 import swing.Table;
 
 import java.awt.Cursor;
@@ -68,7 +64,7 @@ public class AccountContainer extends JPanel {
 		button_add.setIconTextGap(12);
 		button_add.setIcon(new ImageIcon(getClass().getResource("/icons/add.png")));
 		button_add.setText("Add Account");
-		button_add.addMouseListener(new AccountController(this));
+		button_add.addActionListener(new AccountController(this));
 		add(button_add);
 		
 		JScrollPane scrollPane = new JScrollPane();
@@ -78,7 +74,8 @@ public class AccountContainer extends JPanel {
 		add(scrollPane);
 		
 		String[] columnsName = new String[] {"Id", "Username", "Password", "Role", "Balance", "Create At"};
-		table = new Table(columnsName, new AccountController(this));
+		table = new Table(columnsName, new AccountController(this), null);
+		table.setCenterColumn(0);
 		addRows();
         scrollPane.setViewportView(table);
 	}
@@ -96,39 +93,21 @@ public class AccountContainer extends JPanel {
         addRows();
 	}
 	
-	public void click(MouseEvent e) {
-		if(((AbstractButton) e.getComponent()).getText() == "Add Account") {
-			addAccount();
-		}else {
-			Object[] rowData = new Object[table.getModel().getColumnCount()];
-	        for (int i = 0; i < table.getModel().getColumnCount(); i++) {
-	            rowData[i] = table.getModel().getValueAt(table.getSelectedRow(), i);
-	        }
-	        
-	        int id = (int) rowData[0];
-	        String username = (String) rowData[1];
-	        String password = (String) rowData[2];
-	        Role role = (Role) rowData[3];
-	        int balance = (int) rowData[4];
-	        Date createdAt = (Date) rowData[5];
-	        Account account = new Account(id, username, password, role, balance, createdAt);
-			if(table.getColumnCount()-2 == (table.getSelectedColumn())) {
-				edit(account);
-			} else if(table.getColumnCount()-1 == table.getSelectedColumn()) {
-				delete(account);
-			}
-		}
-	}
-	
-	private void addAccount() {
+	public void addAccount() {
 		new AddAccountDialog(this).setVisible(true);
 	}
 	
-	private void edit(Account account) {
+	public void edit() {
+		int id = (int) table.getModel().getValueAt(table.getSelectedRow(), 0);
+		Account account = new Account(id);
+		account = AccountDAO.getInstance().selectById(account);
         new EditAccountDialog(this, account).setVisible(true);
 	}
 	
-	private void delete(Account account) {
+	public void delete() {
+        int id = (int) table.getModel().getValueAt(table.getSelectedRow(), 0);
+        Account account = new Account(id);
+        
 		Employee employee = new Employee();
 		employee.setAccountId(account.getId());
 		employee = EmployeeDAO.getInstance().selectByAccountId(employee);
