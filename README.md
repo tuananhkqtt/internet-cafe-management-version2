@@ -10,6 +10,7 @@
 
 ## Cách sử dụng
     Chạy file src/main/java/main/Main.java
+    Ở trang chủ đang nhập, tài khoản và mật khẩu 'admin' (lưu trong database ở bước cài đặt)
 
 ## Công nghệ được sử dụng
     Java, JavaSwing, JDBC, MS SQL Server
