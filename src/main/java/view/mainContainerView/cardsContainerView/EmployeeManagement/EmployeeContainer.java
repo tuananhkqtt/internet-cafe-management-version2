@@ -65,7 +65,7 @@ public class EmployeeContainer extends JPanel {
 		button_add.setBackground(Color.decode("#831843"));
 		button_add.setForeground(Color.WHITE);
 		button_add.setIconTextGap(12);
-		button_add.setIcon(new ImageIcon(EmployeeContainer.class.getResource("/icons/notification.png")));
+		button_add.setIcon(new ImageIcon(EmployeeContainer.class.getResource("/icons/add.png")));
 		button_add.setText("Add Employee");
 		button_add.addActionListener(new EmployeeController(this));
 		add(button_add);

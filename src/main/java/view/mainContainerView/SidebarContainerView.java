@@ -22,7 +22,9 @@ import java.awt.Font;
 import javax.swing.JSeparator;
 import javax.swing.plaf.basic.BasicButtonUI;
 
+import dao.EmployeeDAO;
 import model.Account;
+import model.Employee;
 import model.MenuModel;
 
 import java.awt.Component;
@@ -62,7 +64,10 @@ public class SidebarContainerView extends JPanel {
 		label_username.setForeground(Color.WHITE);
 		label_username.setFont(new Font("Tahoma", Font.BOLD, 14));
 		label_username.setBackground(Color.decode("#831843"));
-		label_username.setText(account.getUsername());
+		Employee employee = new Employee();
+		employee.setAccountId(account.getId());
+		employee = EmployeeDAO.getInstance().selectByAccountId(employee);
+		label_username.setText(employee.getName());
 		panel_header.add(label_username);
 		panel_header.add(Box.createVerticalStrut(verticalStrutHeader));
 

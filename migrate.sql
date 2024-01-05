@@ -13,15 +13,15 @@ CREATE TABLE Accounts
 )
 -- Chèn tài khoản admin
 INSERT INTO Accounts (Username, Password, Role, Balance, CreatedAt)
-VALUES ('admin', 'admin', 'admin', 0, '2023-12-01'),
-	('employee2', 'employee2', 'employee', 0, '2023-12-01'),
-	('employee3', 'employee3', 'employee', 0, '2023-12-01'),
-	('employee4', 'employee4', 'employee', 0, '2023-12-01'),
-	('employee5', 'employee5', 'employee', 0, '2023-12-01'),
-	('employee6', 'employee6', 'employee', 0, '2023-12-01');
+VALUES ('admin', 'admin', 'admin', 0, '2024-01-01'),
+	('employee2', 'employee2', 'employee', 0, '2024-01-01'),
+	('employee3', 'employee3', 'employee', 0, '2024-01-01'),
+	('employee4', 'employee4', 'employee', 0, '2024-01-01'),
+	('employee5', 'employee5', 'employee', 0, '2024-01-01'),
+	('employee6', 'employee6', 'employee', 0, '2024-01-01');
 
 -- Chèn Accounts user va employee
-DECLARE @CreatedAt DATE = '2023-12-01';
+DECLARE @CreatedAt DATE = '2024-01-01';
 DECLARE @i INT = 0;
 WHILE 1=1
 BEGIN
@@ -78,7 +78,7 @@ BEGIN
 	DECLARE @Name VARCHAR(20) = 'Computer '+CAST(@i+1 AS VARCHAR(5))
 	DECLARE @Price INT = 10000;
     INSERT INTO Computers (Name, Price, CreatedAt)
-    VALUES (@Name, @Price, '2023-12-01')
+    VALUES (@Name, @Price, '2024-01-01')
     SET @i = @i + 1;
 END;
 
@@ -94,18 +94,41 @@ CREATE TABLE Products
 )
 -- Chèn Products
 INSERT INTO Products (Name, Price, Quantity, ImageUrl, CreatedAt)
-VALUES (N'Cơm chiên bò', 30000, 0, '/images/product1.jpg', '2023-12-01'),
-		(N'Cơm chiên trứng', 30000, 0, '/images/product2.jpg', '2023-12-01'),
-		(N'Nui xào bò', 35000, 0, '/images/product3.jpg', '2023-12-01'),
-		(N'Cơm trứng bò', 30000, 0, '/images/product4.jpg', '2023-12-01'),
-		(N'Cơm xào trứng', 30000, 0, '/images/product5.jpg', '2023-12-01'),
-		(N'Nui chiên bò', 35000, 0, '/images/product6.jpg', '2023-12-01'),
-		(N'Cơm chiên bò', 30000, 0, '/images/product7.jpg', '2023-12-01'),
-		(N'Cơm chiên trứng', 30000, 0, '/images/product8.jpg', '2023-12-01'),
-		(N'Nui xào bò', 35000, 0, '/images/product9.jpg', '2023-12-01'),
-		(N'Cơm chiên bò', 30000, 0, '/images/product10.jpg', '2023-12-01'),
-		(N'Cơm chiên trứng', 30000, 0, '/images/product11.jpg', '2023-12-01'),
-		(N'Nui xào bò', 35000, 0, '/images/product12.jpg', '2023-12-01');
+VALUES 
+    ('Espresso', 30000, 0, '/images/product1.jpg', '2024-01-01'),
+    ('Americano', 30000, 0, '/images/product2.jpg', '2024-01-01'),
+    ('Cappuccino', 35000, 0, '/images/product3.jpg', '2024-01-01'),
+    ('Latte', 35000, 0, '/images/product4.jpg', '2024-01-01'),
+    ('Mocha', 40000, 0, '/images/product5.jpg', '2024-01-01'),
+    ('Macchiato', 35000, 0, '/images/product6.jpg', '2024-01-01'),
+    ('Ca phe sua da', 25000, 0, '/images/product7.jpg', '2024-01-01'),
+    ('Tra den', 25000, 0, '/images/product8.jpg', '2024-01-01'),
+    ('Tra xanh', 25000, 0, '/images/product9.jpg', '2024-01-01'),
+    ('Tra oolong', 30000, 0, '/images/product10.jpg', '2024-01-01'),
+    ('Tra hoa cuc', 30000, 0, '/images/product11.jpg', '2024-01-01'),
+    ('Tra chanh', 25000, 0, '/images/product12.jpg', '2024-01-01'),
+    ('Tra sua da', 30000, 0, '/images/product13.jpg', '2024-01-01'),
+    ('Nuoc ep trai cay tuoi', 35000, 0, '/images/product14.jpg', '2024-01-01'),
+    ('Smoothie trai cay', 40000, 0, '/images/product15.jpg', '2024-01-01'),
+    ('Socola nong', 30000, 0, '/images/product16.jpg', '2024-01-01'),
+    ('Soda Y', 25000, 0, '/images/product17.jpg', '2024-01-01'),
+    ('Nuoc dua tuoi', 35000, 0, '/images/product18.jpg', '2024-01-01'),
+    ('Banh mi sandwich', 30000, 0, '/images/product19.jpg', '2024-01-01'),
+    ('Banh mi nuong mo hanh', 25000, 0, '/images/product20.jpg', '2024-01-01'),
+    ('Banh quy va banh ngot', 20000, 0, '/images/product21.jpg', '2024-01-01'),
+    ('Trai cay cat lat', 25000, 0, '/images/product22.jpg', '2024-01-01'),
+    ('Mi goi hai san', 35000, 0, '/images/product23.jpg', '2024-01-01'),
+    ('Khoai tay chien', 25000, 0, '/images/product24.jpg', '2024-01-01'),
+    ('Popcorn', 20000, 0, '/images/product25.jpg', '2024-01-01'),
+    ('Nachos voi sot cay', 30000, 0, '/images/product26.jpg', '2024-01-01'),
+    ('Banh pizza mini', 35000, 0, '/images/product27.jpg', '2024-01-01'),
+    ('Banh hamburger', 30000, 0, '/images/product28.jpg', '2024-01-01'),
+    ('Xoi ga', 25000, 0, '/images/product29.jpg', '2024-01-01'),
+    ('Nuoc tang luc co ga', 30000, CAST(RAND() * 100 AS INT), '/images/product30.jpg', '2024-01-01'),
+    ('Nuoc tang luc khong ga', 30000, CAST(RAND() * 100 AS INT), '/images/product31.jpg', '2024-01-01'),
+    ('Choco Caramel Frappe', 40000, 0, '/images/product32.jpg', '2024-01-01'),
+    ('Matcha Latte', 35000, 0, '/images/product33.jpg', '2024-01-01'),
+    ('Mi ga cay', 35000, 0, '/images/product34.jpg', '2024-01-01')
 
 -- Tạo bảng Invoices
 CREATE TABLE Invoices
@@ -138,7 +161,7 @@ DECLARE @ComputerCount INT;
 SELECT @ComputerCount = COUNT(Id) FROM Computers;
 DECLARE @ProductCount INT
 SELECT @ProductCount = COUNT(Id) FROM Products;
-DECLARE @InvoiceCreatedAt DATETIME = '2023-12-01 00:00:00';
+DECLARE @InvoiceCreatedAt DATETIME = '2024-01-01 00:00:00';
 DECLARE @InvoiceId INT = 1;
 DECLARE @createdby INT = 1;
 WHILE 1=1

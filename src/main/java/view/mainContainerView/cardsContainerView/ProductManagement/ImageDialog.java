@@ -35,11 +35,8 @@ public class ImageDialog extends JDialog {
 		setUndecorated(true);
 		JPanel contentPanel = new BackgroundPanel(imagePath);
 		
-		setBounds(100, 100, 450, 300);
-		getContentPane().setLayout(new BorderLayout());
-		contentPanel.setLayout(new FlowLayout());
-		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
-		getContentPane().add(contentPanel, BorderLayout.CENTER);
+		setBounds(100, 100, 400, 400);
+		getContentPane().add(contentPanel);
 		
 		setLocationRelativeTo(null);
 		setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
